@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+// Title - Title of the book
+// Author - Author of thr book
+// ISBN – To fetch the cover image
+// Page Count – To track total pages read
+// Status – Whether currently reading, completed, or plan to read it
+// Cover Image – For a more visually appealing list
+
 const bookSchema = mongoose.Schema(
   {
     title: {
@@ -31,11 +38,6 @@ const bookSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
-// Page Count – Helpful if you want to track total pages read.
-// Status – Whether you're currently reading, completed, or plan to read it.
-// ISBN – For future reference or to look up more book details.
-// Cover Image – For a more visually appealing list.
 
 const Book = mongoose.model("Book", bookSchema);
 

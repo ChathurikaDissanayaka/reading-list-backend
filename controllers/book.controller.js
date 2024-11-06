@@ -53,9 +53,6 @@ export const addBook = async (req, res) => {
     }
 
     const coverImage = await fetchBookCover(isbn);
-    if (coverImage === "") {
-      logger.warn(`No book cover found for ${isbn}`);
-    }
 
     const newBook = {
       title,
@@ -80,14 +77,36 @@ export const addBook = async (req, res) => {
 export const updateBook = async (req, res) => {
   try {
     const { id } = req.params;
-    const book = await Book.findByIdAndUpdate(id, req.body);
+    const { title, author, isbn, pageCount, status } = req.body;
 
-    if (!book) {
-      logger.error("Error fetching book");
+    const existingBook = await Book.findById(id);
+
+    if (!existingBook) {
+      logger.error("Book not found");
       return res.status(400).send({
-        message: "Error fetching book",
+        message: "Book not found",
       });
     }
+
+    let coverImage = existingBook.coverImage;
+
+    if (isbn && existingBook.isbn !== isbn) {
+      coverImage = await fetchBookCover(isbn);
+      logger.info(`Updated cover image for new ISBN ${isbn}`);
+    }
+
+    const updatedBook = await Book.findByIdAndUpdate(
+      id,
+      {
+        title: title || existingBook.title,
+        author: author || existingBook.author,
+        isbn: isbn || existingBook.isbn,
+        pageCount: pageCount || existingBook.pageCount,
+        status: status || existingBook.status,
+        coverImage,
+      },
+      { new: true }
+    );
 
     logger.info("Updated book successfully");
     res.status(200).json({ message: "Book has been updated successfully." });
