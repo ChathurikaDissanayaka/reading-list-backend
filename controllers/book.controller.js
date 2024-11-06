@@ -1,5 +1,6 @@
 import Book from "../models/book.model.js";
 import logger from "../config/logger.js";
+import fetchBookCover from "../utils/fetchBookCover.js";
 
 // @desc Get all books
 // @route GET /books
@@ -43,17 +44,26 @@ export const getBook = async (req, res) => {
 // @route POST /books
 export const addBook = async (req, res) => {
   try {
-    if (!req.body.title || !req.body.author || !req.body.publishedYear) {
+    const { title, author, isbn, pageCount, status } = req.body;
+    if (!title || !author || !isbn || !pageCount || !status) {
       logger.error("Missing one or more required fields");
       return res.status(400).send({
         message: "Missing one or more required fields",
       });
     }
 
+    const coverImage = await fetchBookCover(isbn);
+    if (coverImage === "") {
+      logger.warn(`No book cover found for ${isbn}`);
+    }
+
     const newBook = {
-      title: req.body.title,
-      author: req.body.author,
-      publishedYear: req.body.publishedYear,
+      title,
+      author,
+      isbn,
+      pageCount,
+      status,
+      coverImage,
     };
 
     const book = await Book.create(newBook);

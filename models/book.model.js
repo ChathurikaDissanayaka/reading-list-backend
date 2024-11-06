@@ -10,21 +10,21 @@ const bookSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    // isbn: {
-    //   type: number,
-    //   required: true,
-    // },
-    // pageCount: {
-    //   type: Number,
-    //   required: true,
-    // },
-    // status: {
-    //   type: String,
-    //   required: true,
-    // },
-    publishedYear: {
+    isbn: {
       type: Number,
       required: true,
+    },
+    pageCount: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      required: true,
+    },
+    coverImage: {
+      type: String,
+      required: false,
     },
   },
   {
