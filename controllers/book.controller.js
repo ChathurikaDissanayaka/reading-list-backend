@@ -88,13 +88,14 @@ export const updateBook = async (req, res) => {
       });
     }
 
-    let coverImage = existingBook.coverImage;
-    let description = existingBook.description;
+    let newCoverImage = existingBook.coverImage;
+    let newDescription = existingBook.description;
 
     if (isbn && existingBook.isbn !== isbn) {
-      const { newCoverImage, newDescription } = await fetchBookDetails(isbn);
-      coverImage = newCoverImage;
-      description = newDescription;
+      const { coverImage, description } = await fetchBookDetails(isbn);
+      newCoverImage = coverImage;
+      newDescription = description;
+      console.log(newCoverImage, newDescription);
       logger.info(`Updated cover image for new ISBN ${isbn}`);
     }
 
@@ -106,8 +107,8 @@ export const updateBook = async (req, res) => {
         isbn: isbn || existingBook.isbn,
         pageCount: pageCount || existingBook.pageCount,
         status: status || existingBook.status,
-        coverImage,
-        description,
+        coverImage: newCoverImage,
+        description: newDescription,
       },
       { new: true }
     );
