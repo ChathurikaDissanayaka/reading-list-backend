@@ -1,6 +1,6 @@
 import Book from "../models/book.model.js";
 import logger from "../config/logger.js";
-import fetchBookCover from "../utils/fetchBookCover.js";
+import fetchBookDetails from "../utils/fetchBookDetails.js";
 
 // @desc Get all books
 // @route GET /books
@@ -52,8 +52,7 @@ export const addBook = async (req, res) => {
       });
     }
 
-    const { coverImage, description } = await fetchBookCover(isbn);
-    console.log(description);
+    const { coverImage, description } = await fetchBookDetails(isbn);
     const newBook = {
       title,
       author,
@@ -93,7 +92,7 @@ export const updateBook = async (req, res) => {
     let description = existingBook.description;
 
     if (isbn && existingBook.isbn !== isbn) {
-      const { newCoverImage, newDescription } = await fetchBookCover(isbn);
+      const { newCoverImage, newDescription } = await fetchBookDetails(isbn);
       coverImage = newCoverImage;
       description = newDescription;
       logger.info(`Updated cover image for new ISBN ${isbn}`);

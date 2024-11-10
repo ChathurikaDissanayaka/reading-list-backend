@@ -4,7 +4,7 @@ import logger from "../config/logger.js";
 const GOOGLE_BOOKS_API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
 
 // Use to fetch the cover image of a book by using ISBN
-const fetchBookCover = async (isbn) => {
+const fetchBookDetails = async (isbn) => {
   let coverImage = "";
   let description = "Description not found";
   try {
@@ -22,4 +22,4 @@ const fetchBookCover = async (isbn) => {
   }
 };
 
-export default fetchBookCover;
+export default fetchBookDetails;
