@@ -52,8 +52,8 @@ export const addBook = async (req, res) => {
       });
     }
 
-    const coverImage = await fetchBookCover(isbn);
-
+    const { coverImage, description } = await fetchBookCover(isbn);
+    console.log(description);
     const newBook = {
       title,
       author,
@@ -61,6 +61,7 @@ export const addBook = async (req, res) => {
       pageCount,
       status,
       coverImage,
+      description,
     };
 
     const book = await Book.create(newBook);
@@ -89,9 +90,12 @@ export const updateBook = async (req, res) => {
     }
 
     let coverImage = existingBook.coverImage;
+    let description = existingBook.description;
 
     if (isbn && existingBook.isbn !== isbn) {
-      coverImage = await fetchBookCover(isbn);
+      const { newCoverImage, newDescription } = await fetchBookCover(isbn);
+      coverImage = newCoverImage;
+      description = newDescription;
       logger.info(`Updated cover image for new ISBN ${isbn}`);
     }
 
@@ -104,12 +108,13 @@ export const updateBook = async (req, res) => {
         pageCount: pageCount || existingBook.pageCount,
         status: status || existingBook.status,
         coverImage,
+        description,
       },
       { new: true }
     );
 
     logger.info("Updated book successfully");
-    res.status(200).json({ message: "Book has been updated successfully." });
+    res.status(200).send(updatedBook);
   } catch (error) {
     logger.error("Error updating book");
     res.status(500).send({ message: error.message });

@@ -5,20 +5,20 @@ const GOOGLE_BOOKS_API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
 
 // Use to fetch the cover image of a book by using ISBN
 const fetchBookCover = async (isbn) => {
-  const googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${GOOGLE_BOOKS_API_KEY}`;
   let coverImage = "";
+  let description = "Description not found";
   try {
+    const googleBooksUrl = `https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}&key=${GOOGLE_BOOKS_API_KEY}`;
     const res = await axios.get(googleBooksUrl);
     if (res.data.totalItems > 0) {
-      coverImage = res.data.items[0].volumeInfo.imageLinks?.thumbnail;
-      return coverImage;
-    } else {
-      logger.warn(`No book found for ISBN ${isbn}`);
-      return "";
+      const book = res.data.items[0].volumeInfo;
+      coverImage = book.imageLinks?.thumbnail;
+      description = book.description;
+      return { coverImage, description };
     }
   } catch (error) {
     logger.error(`Error fetching cover image: ${error.message}`);
-    return "";
+    return { coverImage, description };
   }
 };
 
