@@ -12,7 +12,8 @@ const fetchBookDetails = async (isbn) => {
     const res = await axios.get(googleBooksUrl);
     if (res.data.totalItems > 0) {
       const book = res.data.items[0].volumeInfo;
-      coverImage = book.imageLinks?.thumbnail;
+      coverImage = book.imageLinks?.thumbnail.replace(/^http:/, 'https:');
+      console.log(coverImage)
       description = book.description;
       return { coverImage, description };
     }
