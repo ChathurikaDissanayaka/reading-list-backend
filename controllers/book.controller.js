@@ -7,9 +7,26 @@ import fetchBookDetails from "../utils/fetchBookDetails.js";
 export const getBooks = async (req, res) => {
   try {
     const books = await Book.find({});
-    logger.info("Fetched books successfully");
+
+    const statusCounts = await Book.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const statusCountObj = statusCounts.reduce((acc, item) => {
+      acc[item._id] = item.count;
+      return acc;
+    }, {});
+
+    logger.info("Fetched books with the status counts successfully");
+
     res.status(200).json({
       count: books.length,
+      statusCounts: statusCountObj,
       data: books,
     });
   } catch (error) {
