@@ -17,10 +17,15 @@ export const getBooks = async (req, res) => {
       },
     ]);
 
+    const defaultCounts = {
+      Reading: 0,
+      Completed: 0,
+    };
+
     const statusCountObj = statusCounts.reduce((acc, item) => {
       acc[item._id] = item.count;
       return acc;
-    }, {});
+    }, defaultCounts);
 
     logger.info("Fetched books with the status counts successfully");
 
